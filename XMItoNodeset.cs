@@ -43,6 +43,7 @@ namespace XMItoNodeset
         List<XmlNode> _xmiEnumerationList;
         Dictionary<String, XmlNode> _xmiElementMapEA;
         Dictionary<String, XmlNode> _xmiAttributeMapEA;
+        Dictionary<String, XmlNode> _xmiOwnedAttributeMapIgnore;
         Dictionary<String, XmlNode> _xmiOperationsMapEA;
         Dictionary<String, XmlNode> _xmiStubEAMap;
         Dictionary<String, XmlNode> _xmiXElementMap;
@@ -196,6 +197,7 @@ namespace XMItoNodeset
             _xmiEnumerationList = new List<XmlNode>();
             _xmiElementMapEA = new Dictionary<String, XmlNode>();
             _xmiAttributeMapEA = new Dictionary<String, XmlNode>();
+            _xmiOwnedAttributeMapIgnore = new Dictionary<String, XmlNode>();
             _xmiOperationsMapEA = new Dictionary<String, XmlNode>();
             _xmiStubEAMap = new Dictionary<String, XmlNode>();
             _xmiXElementMap = new Dictionary<String, XmlNode>();
@@ -408,6 +410,20 @@ namespace XMItoNodeset
                     }
                 }
 
+                if (node.Name == "IownedAttribute") // Manual extention
+                {
+                    XmlAttribute xmiId = node.Attributes[String.Format("{0}:id", _xmiNSPräfix)];
+                    if (xmiId != null)
+                    {
+                        try
+                        {
+                            _xmiOwnedAttributeMapIgnore.Add(xmiId.Value, node);
+                        }
+                        catch
+                        { }
+                    }
+                }
+
                 if (node.Name == "element") // EA extension
                 {
                     XmlAttribute xmiType = node.Attributes[String.Format("{0}:type", _xmiNSPräfix)];
@@ -565,6 +581,11 @@ namespace XMItoNodeset
                     continue;
                 }
 
+                if (xmiNode.Attributes["name"] == null)
+                { // ignore this packages without name
+                    continue;
+                }
+
                 XmlAttribute xmiGenerate = xmiNode.Attributes["XMitoNodeset-Generate"];
                 if (xmiGenerate != null)
                 { 
@@ -581,6 +602,14 @@ namespace XMItoNodeset
                 XmlNode nodesetObjectTypeNode = addXmlElement(_nodesetDoc, _nodesetUANodeSetNode, "UAObjectType");
                 addXmlAttribute(_nodesetDoc, nodesetObjectTypeNode, "NodeId", nodeId);
                 addXmlAttribute(_nodesetDoc, nodesetObjectTypeNode, "BrowseName", String.Format("1:{0}", xmiNode.Attributes["name"].Value));
+                XmlAttribute xmiIsAbstract = xmiNode.Attributes["isAbstract"];
+                if (xmiIsAbstract != null)
+                {
+                    if (xmiIsAbstract.Value == "true")
+                    {
+                        addXmlAttribute(_nodesetDoc, nodesetObjectTypeNode, "IsAbstract", "true");
+                    }
+                }
 
                 XmlNode nodesetDisplayNameNode = addXmlElement(_nodesetDoc, nodesetObjectTypeNode, "DisplayName", xmiNode.Attributes["name"].Value);
 
@@ -714,6 +743,10 @@ namespace XMItoNodeset
                             }
                             
                             string id = ownedNode.Attributes[String.Format("{0}:id", _xmiNSPräfix)].Value;
+                            if (getXmiIgnoredOwnedAttributeEA(id) != null)
+                            {
+                                continue;
+                            }
                             string nodeId = getNodeId(String.Format("ns=1;s={0}|{1}", ownedNode.Attributes[String.Format("{0}:id", _xmiNSPräfix)].Value, partentNodeId));
                             string lowerValue = "";
                             string upperValue = "";
@@ -1296,6 +1329,11 @@ namespace XMItoNodeset
                     continue;
                 }
 
+                if (xmiNode.Attributes["name"] == null)
+                { // ignore this packages without name
+                    continue;
+                }
+
                 XmlAttribute xmiGenerate = xmiNode.Attributes["XMitoNodeset-Generate"];
                 if (xmiGenerate != null)
                 { 
@@ -1308,6 +1346,8 @@ namespace XMItoNodeset
                 mergeXmiNodes(xmiNode, null, xmiNode.Attributes[String.Format("{0}:id", _xmiNSPräfix)].Value);
 
                  _nodesetHasDT = true;
+
+
                 string structName = xmiNode.Attributes["name"].Value;
 
                 string nodeId = getNodeId(String.Format("ns=1;s={0}", xmiNode.Attributes[String.Format("{0}:id", _xmiNSPräfix)].Value));
@@ -1931,6 +1971,15 @@ namespace XMItoNodeset
             { }
 
             if (xmi != null)
+            {
+                XmlAttribute noOTAttribute = xmi.Attributes["noObjectType"];
+                if (noOTAttribute != null)
+                {
+                    xmi = null;
+                }         
+            }
+
+            if (xmi != null)
             { 
                 XmlNode xmiX = null;
                 try
@@ -1978,6 +2027,18 @@ namespace XMItoNodeset
             try
             {
                 xmi = _xmiAttributeMapEA[id];
+            }
+            catch
+            { }
+            return xmi;
+        }
+
+        XmlNode getXmiIgnoredOwnedAttributeEA(string id)
+        { 
+            XmlNode xmi = null;
+            try
+            {
+                xmi = _xmiOwnedAttributeMapIgnore[id];
             }
             catch
             { }
