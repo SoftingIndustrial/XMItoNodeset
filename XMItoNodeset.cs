@@ -20,7 +20,8 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Xml;
-
+using Microsoft.Office.Interop.Word;
+using System.Runtime.InteropServices;
 
 namespace XMItoNodeset
 {
@@ -64,6 +65,11 @@ namespace XMItoNodeset
         string _binaryTypesFileName;
         string _xmlTypesFileName;
         string _xmiGenerate;
+        string _wordFileName;
+
+        Application _wordApp = null;
+        Document _wordDoc = null;
+        Table _wordCurrentTable = null;
 
         const string _nodeIdTextBinarySchema = "BinarySchema";
         const string _nodeIdTextXmlSchema = "XmlSchema";
@@ -95,6 +101,7 @@ namespace XMItoNodeset
             _binaryTypesFileName = "BinaryTypes.xml";
             _xmlTypesFileName = "XmlTypes.xml";
             _xmiGenerate = "";
+            _wordFileName = "";
 
             int i = 0;
 
@@ -102,7 +109,7 @@ namespace XMItoNodeset
             {
                 if (command == "")
                 { // no command set -> has to be specified
-                    if ((arg == "/xmi") || (arg == "/xmiS") || (arg == "/xmiDT") || (arg == "/nodeset") || (arg == "/nodesetUrl") || (arg == "/nodesetTypeDictionary") || (arg == "/nodesetImport") || (arg == "/nodesetStartId") || (arg == "/ignoreClassMember") || (arg == "/nodeIdMap") || (arg == "/binaryTypes") || (arg == "/xmlTypes")|| (arg == "/generate"))
+                    if ((arg == "/xmi") || (arg == "/xmiS") || (arg == "/xmiDT") || (arg == "/nodeset") || (arg == "/nodesetUrl") || (arg == "/nodesetTypeDictionary") || (arg == "/nodesetImport") || (arg == "/nodesetStartId") || (arg == "/ignoreClassMember") || (arg == "/nodeIdMap") || (arg == "/binaryTypes") || (arg == "/xmlTypes") || (arg == "/generate") || (arg == "/word"))
                     {
                         command = arg;
                     }
@@ -175,6 +182,10 @@ namespace XMItoNodeset
                     {
                         _xmiGenerate = arg;
                     }
+                    else if (command == "/word")
+                    {
+                        _wordFileName = arg;
+                    }
                     command = "";
                 }
             }
@@ -188,6 +199,18 @@ namespace XMItoNodeset
                 Console.WriteLine("XMItoNodeset /xmi <xmi file> /nodeset <nodeset file> /nodeseturl <URL for nodesetfile>");
                 return;
             }
+
+            try
+            {
+                if (_wordFileName != "")
+                { 
+                    _wordApp = new Application();
+                    _wordDoc = _wordApp.Documents.Add();
+                    _wordDoc.Paragraphs.SpaceAfter = 0;
+                }
+            }
+            catch
+            { }
 
             _xmiClassMap = new Dictionary<String, XmlNode>();
             _xmiClassList = new List<XmlNode>();
@@ -285,7 +308,17 @@ namespace XMItoNodeset
             {
                 nodeIdMapFile.WriteLine("{0}\t{1}", pair.Key, pair.Value);
             }
-            nodeIdMapFile.Close();            
+            nodeIdMapFile.Close();      
+            
+            // store word document
+            if ((_wordApp != null) && (_wordDoc != null))
+            {
+                _wordApp.ActiveDocument.SaveAs(_wordFileName, WdSaveFormat.wdFormatDocumentDefault);
+                _wordDoc.Close();
+
+                _wordApp.Quit();
+                 Marshal.FinalReleaseComObject(_wordApp);
+            }
         }
 
         void initOutputXmlDocuments()
@@ -599,9 +632,10 @@ namespace XMItoNodeset
                 mergeXmiNodes(xmiNode, null, id);
 
                 string nodeId = getNodeId(String.Format("ns=1;s={0}", id));
+                string name = xmiNode.Attributes["name"].Value;
                 XmlNode nodesetObjectTypeNode = addXmlElement(_nodesetDoc, _nodesetUANodeSetNode, "UAObjectType");
                 addXmlAttribute(_nodesetDoc, nodesetObjectTypeNode, "NodeId", nodeId);
-                addXmlAttribute(_nodesetDoc, nodesetObjectTypeNode, "BrowseName", String.Format("1:{0}", xmiNode.Attributes["name"].Value));
+                addXmlAttribute(_nodesetDoc, nodesetObjectTypeNode, "BrowseName", String.Format("1:{0}", name));
                 XmlAttribute xmiIsAbstract = xmiNode.Attributes["isAbstract"];
                 if (xmiIsAbstract != null)
                 {
@@ -611,20 +645,23 @@ namespace XMItoNodeset
                     }
                 }
 
-                XmlNode nodesetDisplayNameNode = addXmlElement(_nodesetDoc, nodesetObjectTypeNode, "DisplayName", xmiNode.Attributes["name"].Value);
+                XmlNode nodesetDisplayNameNode = addXmlElement(_nodesetDoc, nodesetObjectTypeNode, "DisplayName", name);
 
                 XmlNode nodesetReferencesNode = addXmlElement(_nodesetDoc, nodesetObjectTypeNode, "References");
 
                 // base class
                 XmlNode baseClasNode = getBaseClass(xmiNode);
                 string baseClassNodeId;
+                string baseClassName;
                 if (baseClasNode == null)
                 {
                     baseClassNodeId = "i=58";   // OPC UA BaseObjectType
+                    baseClassName = "BaseObjectType";
                 }
                 else
                 {
-                    baseClassNodeId = getNodeId(String.Format("ns=1;s={0}", baseClasNode.Attributes[String.Format("{0}:id", _xmiNSPräfix)].Value), baseClasNode.Attributes["name"].Value, true);
+                    baseClassName = baseClasNode.Attributes["name"].Value;
+                    baseClassNodeId = getNodeId(String.Format("ns=1;s={0}", baseClasNode.Attributes[String.Format("{0}:id", _xmiNSPräfix)].Value), baseClassName, true);
                 }
 
                 XmlNode nodesetBackwardHasSubtypeNode = addXmlElement(_nodesetDoc, nodesetReferencesNode, "Reference", baseClassNodeId);
@@ -638,9 +675,66 @@ namespace XMItoNodeset
                     addNodesetExtentsion(nodesetObjectTypeNode, extension);
                 }
 
+                // documentation
+                Paragraph parTable = null;
+                if (_wordDoc != null)
+                {
+                    Paragraph p2 = _wordDoc.Paragraphs.Add();
+                    p2.Range.Font.Name = "Arial";
+                    p2.Range.Font.Size = 10F;
+                    p2.Range.Text = name;
+                    p2.Range.InsertParagraphAfter();
+
+                    parTable = _wordDoc.Paragraphs.Add();
+                    _wordCurrentTable = _wordDoc.Tables.Add(parTable.Range, 5, 6);
+
+                    _wordCurrentTable.Range.Font.Name = "Arial";
+                    _wordCurrentTable.Range.Font.Size = 8F;
+                    _wordCurrentTable.Range.Font.Bold = 0;
+
+                    _wordCurrentTable.Columns[1].Width = 75;
+                    _wordCurrentTable.Columns[2].Width = 60;
+                    _wordCurrentTable.Columns[3].Width = 70;
+                    _wordCurrentTable.Columns[4].Width = 95;
+                    _wordCurrentTable.Columns[5].Width = 95;
+                    _wordCurrentTable.Columns[6].Width = 70;
+
+                    _wordCurrentTable.Borders.OutsideLineStyle = WdLineStyle.wdLineStyleSingle;
+                    _wordCurrentTable.Borders.InsideLineStyle = WdLineStyle.wdLineStyleSingle;
+                }
+
                 // instance declaration objects
                 addNodesetObjectTypeInstanceDeclarationObjects(nodesetReferencesNode, xmiNode, nodeId, false);
 
+                if (parTable != null)
+                {
+                    _wordCurrentTable.Rows[1].Range.Font.Bold = 1;
+                    _wordCurrentTable.Cell(1,1).Range.Text = "Attribute";
+                    _wordCurrentTable.Rows[1].Cells[2].Merge(_wordCurrentTable.Rows[1].Cells[6]);
+                    _wordCurrentTable.Cell(1,2).Range.Text = "Value";
+
+                    _wordCurrentTable.Cell(2,1).Range.Text = "BrowseName";
+                    _wordCurrentTable.Rows[2].Cells[2].Merge(_wordCurrentTable.Rows[2].Cells[6]);
+                    _wordCurrentTable.Cell(2,2).Range.Text = name;
+
+                    _wordCurrentTable.Cell(3,1).Range.Text = "IsAbstract";
+                    _wordCurrentTable.Rows[3].Cells[2].Merge(_wordCurrentTable.Rows[3].Cells[6]);
+                    _wordCurrentTable.Cell(3,2).Range.Text = "false";
+
+                    _wordCurrentTable.Rows[4].Range.Font.Bold = 1;
+                    _wordCurrentTable.Cell(4,1).Range.Text = "Reference";
+                    _wordCurrentTable.Cell(4,2).Range.Text = "NodeClass";
+                    _wordCurrentTable.Cell(4,3).Range.Text = "BrowseName";
+                    _wordCurrentTable.Cell(4,4).Range.Text = "DataType";
+                    _wordCurrentTable.Cell(4,5).Range.Text = "TypeDefinition";
+                    _wordCurrentTable.Cell(4,6).Range.Text = "ModellingRule";		 			
+
+                    _wordCurrentTable.Rows[5].Cells[1].Merge(_wordCurrentTable.Rows[5].Cells[6]);
+                    _wordCurrentTable.Cell(5,1).Range.Text = "Subtype of " + baseClassName;
+
+                    _wordCurrentTable = null;
+//                    parTable.Range.InsertParagraphAfter();
+                }
             }
         }
 
@@ -907,10 +1001,23 @@ namespace XMItoNodeset
                                                 addNodesetExtentsion(nodesetVariableNode, extension);
                                             }
                                             addNodesetObjectTypeInstanceDeclarationObjects(nodesetReferencesNode, xmiClass, nodeId, true);
+
+                                            // documentation
+                                           if ((_wordCurrentTable != null) && (!isAggregation))
+                                            {
+                                                Row row = _wordCurrentTable.Rows.Add();
+                                                row.Cells[1].Range.Text = refTypeToUse;
+                                                row.Cells[2].Range.Text = "Object";
+                                                row.Cells[3].Range.Text = name;
+                                                row.Cells[4].Range.Text = "";
+                                                row.Cells[5].Range.Text = xmiClass.Attributes["name"].Value;
+                                                row.Cells[6].Range.Text = modelingRule;
+                                            }
                                         }
                                         else
                                         { // reference to variable
-                                            string dataTypeName = getDataTypeName(xmiIdref.Value, true);
+                                            string dtForDoc = "";
+                                            string dataTypeName = getDataTypeName(xmiIdref.Value, true, ref dtForDoc);
 
                                             if (refTypeToUse == "")
                                             {
@@ -972,6 +1079,29 @@ namespace XMItoNodeset
                                                     }
                                                 }
                                             } 
+
+                                            // documentation
+                                            if ((_wordCurrentTable != null) && (!isAggregation))
+                                            {
+                                                Row row = _wordCurrentTable.Rows.Add();
+                                                row.Cells[1].Range.Text = refTypeToUse;
+                                                row.Cells[2].Range.Text = "Variable";
+                                                row.Cells[3].Range.Text = name;
+                                                row.Cells[4].Range.Text = dtForDoc;
+                                                if (variableType == "i=63")
+                                                { 
+                                                    row.Cells[5].Range.Text = "BaseVariableType";
+                                                }
+                                                else if (variableType == "i=68")
+                                                { 
+                                                    row.Cells[5].Range.Text = "PropertyType";
+                                                }
+                                                else
+                                                {
+                                                    row.Cells[5].Range.Text = variableType;
+                                                }
+                                                row.Cells[6].Range.Text = modelingRule;
+                                            }
                                         }
                                     }
                                     break;
@@ -1081,7 +1211,8 @@ namespace XMItoNodeset
                                 break;
                             }
 
-                            string dataTypeName = getDataTypeName(methodParameterNode.Attributes["type"].Value, false);
+                            string dummy = "";
+                            string dataTypeName = getDataTypeName(methodParameterNode.Attributes["type"].Value, false, ref dummy);
 
                             XmlNode nodesetInputValueTypeIdNode = addXmlElement(_nodesetDoc, nodesetInputValueEONode, "TypeId");
                             XmlNode nodesetInputValueId = addXmlElement(_nodesetDoc, nodesetInputValueTypeIdNode, "Identifier", "i=297");
@@ -1108,11 +1239,23 @@ namespace XMItoNodeset
                         addXmlElementAndOneAttribute(_nodesetDoc, nodesetReferencesNode, "Reference", nodeIdOutput, "ReferenceType", "HasProperty");
                         _nodesetUANodeSetNode.AppendChild(outputArgumentsNode);
                     }
+
+                    // documentation
+                    if ((_wordCurrentTable != null) && (!isAggregation))
+                    {
+                        Row row = _wordCurrentTable.Rows.Add();
+                        row.Cells[1].Range.Text = "HasComponent";
+                        row.Cells[2].Range.Text = "Method";
+                        row.Cells[3].Range.Text = name;
+                        row.Cells[4].Range.Text = "";
+                        row.Cells[5].Range.Text = name + "Method";
+                        row.Cells[6].Range.Text = modelingRule;
+                    }
                 }
             }
         }
 
-        string getDataTypeName(string id, bool aliasAllowed)
+        string getDataTypeName(string id, bool aliasAllowed, ref string readableName)
         {
             string dataTypeName = "?#?";
             bool doAddAlias = true;
@@ -1129,6 +1272,7 @@ namespace XMItoNodeset
                 {
                     dataTypeName = isDTAttribute.Value;
                     doAddAlias = false;
+                    readableName = dataTypeName;
                 }
                 XmlAttribute useSAttribute = xmiVariable.Attributes["useStructure"];
                 if (useSAttribute != null)
@@ -1138,6 +1282,7 @@ namespace XMItoNodeset
                     { 
                         dataTypeName = getNodeId(String.Format("ns=1;s={0}", xmiStruct.Attributes[String.Format("{0}:id", _xmiNSPräfix)].Value));
                         doAddAlias = false;
+                        readableName =  xmiStruct.Attributes["name"].Value;
                     }
                 }
                 XmlAttribute useEAttribute = xmiVariable.Attributes["useEnumeration"];
@@ -1148,6 +1293,7 @@ namespace XMItoNodeset
                     { 
                         dataTypeName = getNodeId(String.Format("ns=1;s={0}", xmiEnum.Attributes[String.Format("{0}:id", _xmiNSPräfix)].Value));
                         doAddAlias = false;
+                        readableName =  xmiEnum.Attributes["name"].Value;
                     }
                 }
             }
@@ -1155,11 +1301,13 @@ namespace XMItoNodeset
             {
                 dataTypeName = getNodeId(String.Format("ns=1;s={0}", xmiStructure.Attributes[String.Format("{0}:id", _xmiNSPräfix)].Value), xmiStructure.Attributes["name"].Value, aliasAllowed);
                 doAddAlias = false;
+                readableName =  xmiStructure.Attributes["name"].Value;
             }
             else if (xmiEnumeration != null)
             {
                 dataTypeName = getNodeId(String.Format("ns=1;s={0}", xmiEnumeration.Attributes[String.Format("{0}:id", _xmiNSPräfix)].Value), xmiEnumeration.Attributes["name"].Value, aliasAllowed);
                 doAddAlias = false;
+                readableName =  xmiEnumeration.Attributes["name"].Value;
             }
 
             if (doAddAlias)
