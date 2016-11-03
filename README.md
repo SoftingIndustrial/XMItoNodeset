@@ -46,4 +46,7 @@ Microsoft Visual Studio 2015 is used to build it.
 * /ignoreClassMember
   Name of the class member to ignore in the conversion
   <br>[optional]
+* /word < file name >  
+  Name of the MS Word file to generate
+  <br>[optional]  
 
