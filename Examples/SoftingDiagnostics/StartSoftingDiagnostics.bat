@@ -1,0 +1,1 @@
+..\..\bin\Debug\XMItoNodeset /nodeset Softing.Diagnostics.NodeSet2.xml /nodeIdMap Softing.Diagnostics.NodeIdMap.txt /binaryTypes Softing.Diagnostics.BinaryTypes.xml /xmlTypes Softing.Diagnostics.XmlTypes.xml /xmiS SoftingDiagnostics.xml /nodesetUrl http://industrial.softing.com/UA/Diagnostics 

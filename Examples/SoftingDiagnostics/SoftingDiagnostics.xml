@@ -1,0 +1,212 @@
+<?xml version="1.0" encoding="windows-1252"?>
+<xmi:XMI xmi:version="2.1" xmlns:uml="http://schema.omg.org/spec/UML/2.1" xmlns:xmi="http://schema.omg.org/spec/XMI/2.1" xmlns:thecustomprofile="http://www.sparxsystems.com/profiles/thecustomprofile/1.0">
+	<xmi:Documentation exporter="Enterprise Architect" exporterVersion="6.5"/>
+	<uml:Model xmi:type="uml:Model" name="EA_Model" visibility="public">
+		<packagedElement xmi:type="uml:Package" xmi:id="EAPK_CD6D1E45_DB40_4132_86E9_278D4ADE9000" name="Diagnostics - Export" visibility="public">
+			<packagedElement xmi:type="uml:Class" xmi:id="EAID_482790E2_9199_4167_B990_501C15998536" name="DiagnosticsDeviceObjectType" visibility="public">
+				<ownedAttribute xmi:type="uml:Property" xmi:id="EAID_B70D3DEE_65B6_4aa3_99EC_E0C8B5661ED5" name="IPAddress" visibility="public" isStatic="false" isReadOnly="false" isDerived="false" isOrdered="false" isUnique="true" isDerivedUnion="false">
+					<type xmi:idref="EAID_8884E6CF_C076_4a23_906A_FCF3B5B77737"/>
+					<lowerValue xmi:type="uml:LiteralInteger" xmi:id="EAID_LI000001_65B6_4aa3_99EC_E0C8B5661ED5" value="1"/>
+					<upperValue xmi:type="uml:LiteralInteger" xmi:id="EAID_LI000002_65B6_4aa3_99EC_E0C8B5661ED5" value="1"/>
+				</ownedAttribute>
+				<ownedAttribute xmi:type="uml:Property" xmi:id="EAID_4DE1C613_6886_45bf_8BD8_16166D9B45B4" name="ProtocolType" visibility="public" isStatic="false" isReadOnly="false" isDerived="false" isOrdered="false" isUnique="true" isDerivedUnion="false">
+					<type xmi:idref="EAID_8884E6CF_C076_4a23_906A_FCF3B5B77737"/>
+					<lowerValue xmi:type="uml:LiteralInteger" xmi:id="EAID_LI000003_6886_45bf_8BD8_16166D9B45B4" value="1"/>
+					<upperValue xmi:type="uml:LiteralInteger" xmi:id="EAID_LI000004_6886_45bf_8BD8_16166D9B45B4" value="1"/>
+				</ownedAttribute>
+				<ownedAttribute xmi:type="uml:Property" xmi:id="EAID_58826415_948C_46c4_B846_27A707C7A37E" name="DeviceName" visibility="public" isStatic="false" isReadOnly="false" isDerived="false" isOrdered="false" isUnique="true" isDerivedUnion="false">
+					<type xmi:idref="EAID_8884E6CF_C076_4a23_906A_FCF3B5B77737"/>
+					<lowerValue xmi:type="uml:LiteralInteger" xmi:id="EAID_LI000005_948C_46c4_B846_27A707C7A37E" value="0"/>
+					<upperValue xmi:type="uml:LiteralInteger" xmi:id="EAID_LI000006_948C_46c4_B846_27A707C7A37E" value="1"/>
+				</ownedAttribute>
+				<ownedAttribute xmi:type="uml:Property" xmi:id="EAID_F3492CFF_2A32_4b86_8443_80719889148E" name="Tag" visibility="public" isStatic="false" isReadOnly="false" isDerived="false" isOrdered="false" isUnique="true" isDerivedUnion="false">
+					<type xmi:idref="EAID_8884E6CF_C076_4a23_906A_FCF3B5B77737"/>
+					<lowerValue xmi:type="uml:LiteralInteger" xmi:id="EAID_LI000007_2A32_4b86_8443_80719889148E" value="0"/>
+					<upperValue xmi:type="uml:LiteralInteger" xmi:id="EAID_LI000008_2A32_4b86_8443_80719889148E" value="1"/>
+				</ownedAttribute>
+				<ownedAttribute xmi:type="uml:Property" xmi:id="EAID_6CE0E861_3CFB_4763_9D69_22E95E28D04C" name="FirmwareVersion" visibility="public" isStatic="false" isReadOnly="false" isDerived="false" isOrdered="false" isUnique="true" isDerivedUnion="false">
+					<type xmi:idref="EAID_8884E6CF_C076_4a23_906A_FCF3B5B77737"/>
+					<lowerValue xmi:type="uml:LiteralInteger" xmi:id="EAID_LI000009_3CFB_4763_9D69_22E95E28D04C" value="0"/>
+					<upperValue xmi:type="uml:LiteralInteger" xmi:id="EAID_LI000010_3CFB_4763_9D69_22E95E28D04C" value="1"/>
+				</ownedAttribute>
+				<ownedAttribute xmi:type="uml:Property" xmi:id="EAID_36F096FB_0DC1_4161_BF85_2B9C744C6F0D" name="Status" visibility="public" isStatic="false" isReadOnly="false" isDerived="false" isOrdered="false" isUnique="true" isDerivedUnion="false">
+					<type xmi:idref="EAID_8884E6CF_C076_4a23_906A_FCF3B5B77737"/>
+					<lowerValue xmi:type="uml:LiteralInteger" xmi:id="EAID_LI000011_0DC1_4161_BF85_2B9C744C6F0D" value="0"/>
+					<upperValue xmi:type="uml:LiteralInteger" xmi:id="EAID_LI000012_0DC1_4161_BF85_2B9C744C6F0D" value="1"/>
+				</ownedAttribute>
+			</packagedElement>
+		</packagedElement>
+		<thecustomprofile:HasProperty base_Property="EAID_B70D3DEE_65B6_4aa3_99EC_E0C8B5661ED5"/>
+		<thecustomprofile:HasProperty base_Property="EAID_4DE1C613_6886_45bf_8BD8_16166D9B45B4"/>
+		<thecustomprofile:HasProperty base_Property="EAID_58826415_948C_46c4_B846_27A707C7A37E"/>
+		<thecustomprofile:HasProperty base_Property="EAID_F3492CFF_2A32_4b86_8443_80719889148E"/>
+		<thecustomprofile:HasProperty base_Property="EAID_6CE0E861_3CFB_4763_9D69_22E95E28D04C"/>
+		<thecustomprofile:HasComponent base_Property="EAID_36F096FB_0DC1_4161_BF85_2B9C744C6F0D"/>
+	</uml:Model>
+	<xmi:Extension extender="Enterprise Architect" extenderID="6.5">
+		<elements>
+			<element xmi:idref="EAPK_CD6D1E45_DB40_4132_86E9_278D4ADE9000" xmi:type="uml:Package" name="Diagnostics - Export" scope="public">
+				<model package2="EAID_CD6D1E45_DB40_4132_86E9_278D4ADE9000" package="EAPK_A1515990_E886_453b_8DA5_8A6BB2F324A5" tpos="0" ea_localid="10" ea_eleType="package"/>
+				<properties isSpecification="false" sType="Package" nType="0" scope="public"/>
+				<project author="rt" version="1.0" phase="1.0" created="2016-08-10 08:44:35" modified="2016-10-14 11:20:21" complexity="1" status="Proposed"/>
+				<code gentype="Java"/>
+				<style appearance="BackColor=-1;BorderColor=-1;BorderWidth=-1;FontColor=-1;VSwimLanes=1;HSwimLanes=1;BorderStyle=0;"/>
+				<tags/>
+				<xrefs/>
+				<extendedProperties tagged="0" package_name="Diagnostics"/>
+				<packageproperties version="1.0"/>
+				<paths/>
+				<times created="2016-08-10 08:44:35" modified="2016-10-14 11:20:21"/>
+				<flags iscontrolled="FALSE" isprotected="FALSE" usedtd="FALSE" logxml="FALSE"/>
+			</element>
+			<element xmi:idref="EAID_482790E2_9199_4167_B990_501C15998536" xmi:type="uml:Class" name="DiagnosticsDeviceObjectType" scope="public">
+				<model package="EAPK_CD6D1E45_DB40_4132_86E9_278D4ADE9000" tpos="0" ea_localid="25" ea_eleType="element"/>
+				<properties isSpecification="false" sType="Class" nType="0" scope="public" isRoot="false" isLeaf="false" isAbstract="false" isActive="false"/>
+				<project author="rt" version="1.0" phase="1.0" created="2016-08-10 08:41:03" modified="2016-10-14 11:23:03" complexity="1" status="Proposed"/>
+				<code product_name="&lt;none&gt;" gentype="&lt;none&gt;"/>
+				<style appearance="BackColor=-1;BorderColor=-1;BorderWidth=-1;FontColor=-1;VSwimLanes=1;HSwimLanes=1;BorderStyle=0;"/>
+				<tags/>
+				<xrefs/>
+				<extendedProperties tagged="0" package_name="Diagnostics - Export"/>
+				<attributes>
+					<attribute xmi:idref="EAID_B70D3DEE_65B6_4aa3_99EC_E0C8B5661ED5" name="IPAddress" scope="Public">
+						<initial/>
+						<documentation/>
+						<model ea_localid="1" ea_guid="{B70D3DEE-65B6-4aa3-99EC-E0C8B5661ED5}"/>
+						<properties type="String" collection="false" duplicates="0" changeability="changeable"/>
+						<coords ordered="0"/>
+						<containment containment="Not Specified" position="0"/>
+						<stereotype stereotype="HasProperty"/>
+						<bounds lower="1" upper="1"/>
+						<options/>
+						<style/>
+						<styleex value="volatile=0;"/>
+						<tags/>
+						<xrefs value="$XREFPROP=$XID={BFABAABF-60BE-4103-AC0D-8B48AA439CD1}$XID;$NAM=Stereotypes$NAM;$TYP=attribute property$TYP;$VIS=Public$VIS;$PAR=0$PAR;$DES=@STEREO;Name=HasProperty;GUID={A5B585E9-DD74-4aa6-A24E-20CD794C9938};@ENDSTEREO;$DES;$CLT={B70D3DEE-65B6-4aa3-99EC-E0C8B5661ED5}$CLT;$SUP=&lt;none&gt;$SUP;$ENDXREF;"/>
+					</attribute>
+					<attribute xmi:idref="EAID_4DE1C613_6886_45bf_8BD8_16166D9B45B4" name="ProtocolType" scope="Public">
+						<initial/>
+						<documentation/>
+						<model ea_localid="2" ea_guid="{4DE1C613-6886-45bf-8BD8-16166D9B45B4}"/>
+						<properties type="String" collection="false" duplicates="0" changeability="changeable"/>
+						<coords ordered="0"/>
+						<containment containment="Not Specified" position="1"/>
+						<stereotype stereotype="HasProperty"/>
+						<bounds lower="1" upper="1"/>
+						<options/>
+						<style/>
+						<styleex value="volatile=0;"/>
+						<tags/>
+						<xrefs value="$XREFPROP=$XID={C19A509C-A334-4300-B37F-C51B252C232F}$XID;$NAM=Stereotypes$NAM;$TYP=attribute property$TYP;$VIS=Public$VIS;$PAR=0$PAR;$DES=@STEREO;Name=HasProperty;GUID={A5B585E9-DD74-4aa6-A24E-20CD794C9938};@ENDSTEREO;$DES;$CLT={4DE1C613-6886-45bf-8BD8-16166D9B45B4}$CLT;$SUP=&lt;none&gt;$SUP;$ENDXREF;"/>
+					</attribute>
+					<attribute xmi:idref="EAID_58826415_948C_46c4_B846_27A707C7A37E" name="DeviceName" scope="Public">
+						<initial/>
+						<documentation/>
+						<model ea_localid="3" ea_guid="{58826415-948C-46c4-B846-27A707C7A37E}"/>
+						<properties type="String" collection="false" duplicates="0" changeability="changeable"/>
+						<coords ordered="0"/>
+						<containment containment="Not Specified" position="2"/>
+						<stereotype stereotype="HasProperty"/>
+						<bounds lower="0" upper="1"/>
+						<options/>
+						<style/>
+						<styleex value="volatile=0;"/>
+						<tags/>
+						<xrefs value="$XREFPROP=$XID={D1DB9F51-7E29-4932-BB12-1513AAF8EB1E}$XID;$NAM=Stereotypes$NAM;$TYP=attribute property$TYP;$VIS=Public$VIS;$PAR=0$PAR;$DES=@STEREO;Name=HasProperty;GUID={A5B585E9-DD74-4aa6-A24E-20CD794C9938};@ENDSTEREO;$DES;$CLT={58826415-948C-46c4-B846-27A707C7A37E}$CLT;$SUP=&lt;none&gt;$SUP;$ENDXREF;"/>
+					</attribute>
+					<attribute xmi:idref="EAID_F3492CFF_2A32_4b86_8443_80719889148E" name="Tag" scope="Public">
+						<initial/>
+						<documentation/>
+						<model ea_localid="4" ea_guid="{F3492CFF-2A32-4b86-8443-80719889148E}"/>
+						<properties type="String" collection="false" duplicates="0" changeability="changeable"/>
+						<coords ordered="0"/>
+						<containment containment="Not Specified" position="3"/>
+						<stereotype stereotype="HasProperty"/>
+						<bounds lower="0" upper="1"/>
+						<options/>
+						<style/>
+						<styleex value="volatile=0;"/>
+						<tags/>
+						<xrefs value="$XREFPROP=$XID={7BDFA937-E863-4046-999D-14C2DE4F32B4}$XID;$NAM=Stereotypes$NAM;$TYP=attribute property$TYP;$VIS=Public$VIS;$PAR=0$PAR;$DES=@STEREO;Name=HasProperty;GUID={A5B585E9-DD74-4aa6-A24E-20CD794C9938};@ENDSTEREO;$DES;$CLT={F3492CFF-2A32-4b86-8443-80719889148E}$CLT;$SUP=&lt;none&gt;$SUP;$ENDXREF;"/>
+					</attribute>
+					<attribute xmi:idref="EAID_6CE0E861_3CFB_4763_9D69_22E95E28D04C" name="FirmwareVersion" scope="Public">
+						<initial/>
+						<documentation/>
+						<model ea_localid="5" ea_guid="{6CE0E861-3CFB-4763-9D69-22E95E28D04C}"/>
+						<properties type="String" collection="false" duplicates="0" changeability="changeable"/>
+						<coords ordered="0"/>
+						<containment containment="Not Specified" position="4"/>
+						<stereotype stereotype="HasProperty"/>
+						<bounds lower="0" upper="1"/>
+						<options/>
+						<style/>
+						<styleex value="volatile=0;"/>
+						<tags/>
+						<xrefs value="$XREFPROP=$XID={E03608B5-8DBB-40d8-A414-C7BF0758D986}$XID;$NAM=Stereotypes$NAM;$TYP=attribute property$TYP;$VIS=Public$VIS;$PAR=0$PAR;$DES=@STEREO;Name=HasProperty;GUID={A5B585E9-DD74-4aa6-A24E-20CD794C9938};@ENDSTEREO;$DES;$CLT={6CE0E861-3CFB-4763-9D69-22E95E28D04C}$CLT;$SUP=&lt;none&gt;$SUP;$ENDXREF;"/>
+					</attribute>
+					<attribute xmi:idref="EAID_36F096FB_0DC1_4161_BF85_2B9C744C6F0D" name="Status" scope="Public">
+						<initial/>
+						<documentation/>
+						<model ea_localid="93" ea_guid="{36F096FB-0DC1-4161-BF85-2B9C744C6F0D}"/>
+						<properties type="String" collection="false" duplicates="0" changeability="changeable"/>
+						<coords ordered="0"/>
+						<containment containment="Not Specified" position="5"/>
+						<stereotype stereotype="HasComponent"/>
+						<bounds lower="0" upper="1"/>
+						<options/>
+						<style/>
+						<styleex value="volatile=0;"/>
+						<tags/>
+						<xrefs value="$XREFPROP=$XID={31B3078B-422F-486e-8926-178A583BBE21}$XID;$NAM=Stereotypes$NAM;$TYP=attribute property$TYP;$VIS=Public$VIS;$PAR=0$PAR;$DES=@STEREO;Name=HasComponent;GUID={B5774F81-665B-4925-86FF-A4797889D227};@ENDSTEREO;$DES;$CLT={36F096FB-0DC1-4161-BF85-2B9C744C6F0D}$CLT;$SUP=&lt;none&gt;$SUP;$ENDXREF;"/>
+					</attribute>
+				</attributes>
+			</element>
+		</elements>
+		<connectors/>
+		<primitivetypes>
+			<packagedElement xmi:type="uml:Package" xmi:id="EAPrimitiveTypesPackage" name="EA_PrimitiveTypes_Package" visibility="public"/>
+		</primitivetypes>
+		<profiles>
+			<uml:Profile xmi:version="2.1" xmlns:uml="http://schema.omg.org/spec/UML/2.1/" xmlns:xmi="http://schema.omg.org/spec/XMI/2.1" xmi:id="thecustomprofile" nsPrefix="thecustomprofile" name="thecustomprofile" metamodelReference="mmref01">
+				<ownedComment xmi:type="uml:Comment" xmi:id="comment01" annotatedElement="thecustomprofile">
+					<body> Version:1.0</body>
+				</ownedComment>
+				<packageImport xmi:id="mmref01">
+					<importedPackage href="http://schema.omg.org/spec/UML/2.1/"/>
+				</packageImport>
+				<packagedElement xmi:type="uml:Stereotype" xmi:id="HasProperty" name="HasProperty">
+					<ownedAttribute xmi:type="uml:Property" xmi:id="HasProperty-base_Property" name="base_Property" association="Property_HasProperty">
+						<type href="http://schema.omg.org/spec/UML/2.1/Property"/>
+					</ownedAttribute>
+				</packagedElement>
+				<packagedElement xmi:type="uml:Extension" xmi:id="Property_HasProperty" name="A_Property_HasProperty" memberEnd="extension_HasProperty HasProperty-base_Property">
+					<ownedEnd xmi:id="extension_HasProperty" name="extension_HasProperty" type="HasProperty" isComposite="true" lower="0" upper="1" memberEnd="extension_HasProperty HasProperty-base_Property"/>
+				</packagedElement>
+				<packagedElement xmi:type="uml:Stereotype" xmi:id="HasComponent" name="HasComponent">
+					<ownedAttribute xmi:type="uml:Property" xmi:id="HasComponent-base_Property" name="base_Property" association="Property_HasComponent">
+						<type href="http://schema.omg.org/spec/UML/2.1/Property"/>
+					</ownedAttribute>
+				</packagedElement>
+				<packagedElement xmi:type="uml:Extension" xmi:id="Property_HasComponent" name="A_Property_HasComponent" memberEnd="extension_HasComponent HasComponent-base_Property">
+					<ownedEnd xmi:id="extension_HasComponent" name="extension_HasComponent" type="HasComponent" isComposite="true" lower="0" upper="1" memberEnd="extension_HasComponent HasComponent-base_Property"/>
+				</packagedElement>
+			</uml:Profile>
+		</profiles>
+		<diagrams>
+			<diagram xmi:id="EAID_BAFA84AE_2039_4c98_BF35_0F00FF0D27FE">
+				<model package="EAPK_CD6D1E45_DB40_4132_86E9_278D4ADE9000" localID="4" owner="EAPK_CD6D1E45_DB40_4132_86E9_278D4ADE9000"/>
+				<properties name="Diagnostics" type="Logical"/>
+				<project author="rt" version="1.0" created="2016-08-10 00:00:00" modified="2016-11-16 10:03:26"/>
+				<style1 value="ShowPrivate=1;ShowProtected=1;ShowPublic=1;HideRelationships=0;Locked=0;Border=1;HighlightForeign=1;PackageContents=1;SequenceNotes=0;ScalePrintImage=0;PPgs.cx=1;PPgs.cy=1;DocSize.cx=791;DocSize.cy=1138;ShowDetails=0;Orientation=P;Zoom=100;ShowTags=0;OpParams=1;VisibleAttributeDetail=0;ShowOpRetType=1;ShowIcons=1;CollabNums=0;HideProps=0;ShowReqs=0;ShowCons=0;PaperSize=9;HideParents=0;UseAlias=0;HideAtts=0;HideOps=0;HideStereo=0;HideElemStereo=0;ShowTests=0;ShowMaint=0;ConnectorNotation=UML 2.1;ExplicitNavigability=0;AdvancedElementProps=1;AdvancedFeatureProps=1;AdvancedConnectorProps=1;ShowNotes=0;SuppressBrackets=0;SuppConnectorLabels=0;PrintPageHeadFoot=0;ShowAsList=0;"/>
+				<style2 value="ExcludeRTF=0;DocAll=0;HideQuals=0;AttPkg=1;ShowTests=0;ShowMaint=0;SuppressFOC=1;MatrixActive=0;SwimlanesActive=1;KanbanActive=0;MatrixLineWidth=1;MatrixLineClr=0;MatrixLocked=0;TConnectorNotation=UML 2.1;TExplicitNavigability=0;AdvancedElementProps=1;AdvancedFeatureProps=1;AdvancedConnectorProps=1;ProfileData=;MDGDgm=;STBLDgm=;ShowNotes=0;VisibleAttributeDetail=0;ShowOpRetType=1;SuppressBrackets=0;SuppConnectorLabels=0;PrintPageHeadFoot=0;ShowAsList=0;SuppressedCompartments=;SaveTag=2ACA6903;"/>
+				<swimlanes value="locked=false;orientation=0;width=0;inbar=false;names=false;color=-1;bold=false;fcol=0;tcol=-1;ofCol=-1;hl=1;cls=0;SwimlaneFont=lfh:-10,lfw:0,lfi:0,lfu:0,lfs:0,lfface:ARIAL,lfe:0,lfo:0,lfchar:1,lfop:0,lfcp:0,lfq:0,lfpf=0,lfWidth=0;"/>
+				<matrixitems value="locked=false;matrixactive=false;swimlanesactive=true;kanbanactive=false;width=1;clrLine=0;"/>
+				<extendedProperties/>
+				<elements>
+					<element geometry="Left=69;Top=34;Right=235;Bottom=182;" subject="EAID_482790E2_9199_4167_B990_501C15998536" seqno="1" style="DUID=E9C1C3C9;"/>
+				</elements>
+			</diagram>
+		</diagrams>
+		<EAStub xmi:id="EAID_8884E6CF_C076_4a23_906A_FCF3B5B77737" name="String" UMLType="Class"/>
+	</xmi:Extension>
+</xmi:XMI>
