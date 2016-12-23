@@ -633,6 +633,7 @@ namespace XMItoNodeset
 
                 string nodeId = getNodeId(String.Format("ns=1;s={0}", id));
                 string name = xmiNode.Attributes["name"].Value;
+                string isAbstract = "false";
                 XmlNode nodesetObjectTypeNode = addXmlElement(_nodesetDoc, _nodesetUANodeSetNode, "UAObjectType");
                 addXmlAttribute(_nodesetDoc, nodesetObjectTypeNode, "NodeId", nodeId);
                 addXmlAttribute(_nodesetDoc, nodesetObjectTypeNode, "BrowseName", String.Format("1:{0}", name));
@@ -642,6 +643,7 @@ namespace XMItoNodeset
                     if (xmiIsAbstract.Value == "true")
                     {
                         addXmlAttribute(_nodesetDoc, nodesetObjectTypeNode, "IsAbstract", "true");
+                        isAbstract = "true";
                     }
                 }
 
@@ -686,18 +688,19 @@ namespace XMItoNodeset
                     p2.Range.InsertParagraphAfter();
 
                     parTable = _wordDoc.Paragraphs.Add();
-                    _wordCurrentTable = _wordDoc.Tables.Add(parTable.Range, 5, 6);
+                    _wordCurrentTable = _wordDoc.Tables.Add(parTable.Range, 5, 7);
 
                     _wordCurrentTable.Range.Font.Name = "Arial";
                     _wordCurrentTable.Range.Font.Size = 8F;
                     _wordCurrentTable.Range.Font.Bold = 0;
 
-                    _wordCurrentTable.Columns[1].Width = 75;
-                    _wordCurrentTable.Columns[2].Width = 60;
-                    _wordCurrentTable.Columns[3].Width = 70;
-                    _wordCurrentTable.Columns[4].Width = 95;
-                    _wordCurrentTable.Columns[5].Width = 95;
-                    _wordCurrentTable.Columns[6].Width = 70;
+                    _wordCurrentTable.Columns[1].Width = 70;
+                    _wordCurrentTable.Columns[2].Width = 55;
+                    _wordCurrentTable.Columns[3].Width = 65;
+                    _wordCurrentTable.Columns[4].Width = 90;
+                    _wordCurrentTable.Columns[5].Width = 80;
+                    _wordCurrentTable.Columns[6].Width = 65;
+                    _wordCurrentTable.Columns[7].Width = 40;
 
                     _wordCurrentTable.Borders.OutsideLineStyle = WdLineStyle.wdLineStyleSingle;
                     _wordCurrentTable.Borders.InsideLineStyle = WdLineStyle.wdLineStyleSingle;
@@ -710,16 +713,16 @@ namespace XMItoNodeset
                 {
                     _wordCurrentTable.Rows[1].Range.Font.Bold = 1;
                     _wordCurrentTable.Cell(1,1).Range.Text = "Attribute";
-                    _wordCurrentTable.Rows[1].Cells[2].Merge(_wordCurrentTable.Rows[1].Cells[6]);
+                    _wordCurrentTable.Rows[1].Cells[2].Merge(_wordCurrentTable.Rows[1].Cells[7]);
                     _wordCurrentTable.Cell(1,2).Range.Text = "Value";
 
                     _wordCurrentTable.Cell(2,1).Range.Text = "BrowseName";
-                    _wordCurrentTable.Rows[2].Cells[2].Merge(_wordCurrentTable.Rows[2].Cells[6]);
+                    _wordCurrentTable.Rows[2].Cells[2].Merge(_wordCurrentTable.Rows[2].Cells[7]);
                     _wordCurrentTable.Cell(2,2).Range.Text = name;
 
                     _wordCurrentTable.Cell(3,1).Range.Text = "IsAbstract";
-                    _wordCurrentTable.Rows[3].Cells[2].Merge(_wordCurrentTable.Rows[3].Cells[6]);
-                    _wordCurrentTable.Cell(3,2).Range.Text = "false";
+                    _wordCurrentTable.Rows[3].Cells[2].Merge(_wordCurrentTable.Rows[3].Cells[7]);
+                    _wordCurrentTable.Cell(3,2).Range.Text = isAbstract;
 
                     _wordCurrentTable.Rows[4].Range.Font.Bold = 1;
                     _wordCurrentTable.Cell(4,1).Range.Text = "Reference";
@@ -728,8 +731,9 @@ namespace XMItoNodeset
                     _wordCurrentTable.Cell(4,4).Range.Text = "DataType";
                     _wordCurrentTable.Cell(4,5).Range.Text = "TypeDefinition";
                     _wordCurrentTable.Cell(4,6).Range.Text = "ModellingRule";		 			
+                    _wordCurrentTable.Cell(4,7).Range.Text = "Access";		
 
-                    _wordCurrentTable.Rows[5].Cells[1].Merge(_wordCurrentTable.Rows[5].Cells[6]);
+                    _wordCurrentTable.Rows[5].Cells[1].Merge(_wordCurrentTable.Rows[5].Cells[7]);
                     _wordCurrentTable.Cell(5,1).Range.Text = "Subtype of " + baseClassName;
 
                     _wordCurrentTable = null;
@@ -1012,12 +1016,14 @@ namespace XMItoNodeset
                                                 row.Cells[4].Range.Text = "";
                                                 row.Cells[5].Range.Text = xmiClass.Attributes["name"].Value;
                                                 row.Cells[6].Range.Text = modelingRule;
+                                                row.Cells[7].Range.Text = "";
                                             }
                                         }
                                         else
                                         { // reference to variable
                                             string dtForDoc = "";
                                             string dataTypeName = getDataTypeName(xmiIdref.Value, true, ref dtForDoc);
+                                            string access = "R";
 
                                             if (refTypeToUse == "")
                                             {
@@ -1035,6 +1041,16 @@ namespace XMItoNodeset
                                             if (isArray)
                                             {
                                                 addXmlAttribute(_nodesetDoc, nodesetVariableNode, "ValueRank", "1");
+                                            }
+                                            if (xmiVariable != null)
+                                            {
+                                                XmlAttribute isALAttribute = xmiVariable.Attributes["AccessLevel"];
+                                                if (isALAttribute != null)
+                                                {
+                                                    addXmlAttribute(_nodesetDoc, nodesetVariableNode, "AccessLevel", isALAttribute.Value);
+                                                    addXmlAttribute(_nodesetDoc, nodesetVariableNode, "UserAccessLevel", isALAttribute.Value);
+                                                    access = "RW";
+                                                }
                                             }
 
                                             addXmlElement(_nodesetDoc, nodesetVariableNode, "DisplayName", name);
@@ -1101,6 +1117,7 @@ namespace XMItoNodeset
                                                     row.Cells[5].Range.Text = variableType;
                                                 }
                                                 row.Cells[6].Range.Text = modelingRule;
+                                                row.Cells[7].Range.Text = access;
                                             }
                                         }
                                     }
@@ -1250,6 +1267,7 @@ namespace XMItoNodeset
                         row.Cells[4].Range.Text = "";
                         row.Cells[5].Range.Text = name + "Method";
                         row.Cells[6].Range.Text = modelingRule;
+                        row.Cells[7].Range.Text = "";
                     }
                 }
             }
@@ -1393,6 +1411,30 @@ namespace XMItoNodeset
                 addXmlAttribute(_xmlTypesDoc, xmlComplexTypeNodeEl2, "type", String.Format("ListOf{0}", enumName));
                 addXmlAttribute(_xmlTypesDoc, xmlComplexTypeNodeEl2, "nillable", "true");
 
+                // documentation
+                Paragraph parTable = null;
+                if (_wordDoc != null)
+                {
+                    Paragraph p2 = _wordDoc.Paragraphs.Add();
+                    p2.Range.Font.Name = "Arial";
+                    p2.Range.Font.Size = 10F;
+                    p2.Range.Text = enumName;
+                    p2.Range.InsertParagraphAfter();
+
+                    parTable = _wordDoc.Paragraphs.Add();
+                    _wordCurrentTable = _wordDoc.Tables.Add(parTable.Range, 1, 2);
+
+                    _wordCurrentTable.Range.Font.Name = "Arial";
+                    _wordCurrentTable.Range.Font.Size = 8F;
+                    _wordCurrentTable.Range.Font.Bold = 0;
+
+                    _wordCurrentTable.Columns[1].Width = 100;
+                    _wordCurrentTable.Columns[2].Width = 100;
+
+                    _wordCurrentTable.Borders.OutsideLineStyle = WdLineStyle.wdLineStyleSingle;
+                    _wordCurrentTable.Borders.InsideLineStyle = WdLineStyle.wdLineStyleSingle;
+                }
+
                 foreach (XmlNode ownedLiteralNode in xmiNode.ChildNodes)
                 {
                     if (ownedLiteralNode.Name == "ownedLiteral")
@@ -1445,7 +1487,23 @@ namespace XMItoNodeset
 
                         // xml typess
                        addQualifiedXmlElementAndOneAttribute(_xmlTypesDoc, xmlEnumTypeNodeRes, "xs", "http://www.w3.org/2001/XMLSchema", "enumeration", "value", String.Format("{0}_{1}", exoText, exoValue));
+
+                        // documentation
+                        if (_wordCurrentTable != null)
+                        {
+                            Row row = _wordCurrentTable.Rows.Add();
+                            row.Cells[1].Range.Text = exoText;
+                            row.Cells[2].Range.Text = exoValue;
+                        }
                     }
+                }
+
+                if (_wordCurrentTable != null)
+                {
+                    _wordCurrentTable.Rows[1].Range.Font.Bold = 1;
+                    _wordCurrentTable.Cell(1,1).Range.Text = "Name";
+                    _wordCurrentTable.Cell(1,2).Range.Text = "Value";
+                    _wordCurrentTable = null;
                 }
             }
         }
@@ -1554,8 +1612,34 @@ namespace XMItoNodeset
                 XmlNode xmlStructTypeSqNode = addQualifiedXmlElement(_xmlTypesDoc, _xmlTypesRootNode, "xs", "http://www.w3.org/2001/XMLSchema", "sequence");
                 addQualifiedXmlElementAndTwoAttributes(_xmlTypesDoc, _xmlTypesRootNode, "xs", "http://www.w3.org/2001/XMLSchema", "element", "name", structName, "type", String.Format("tns:{0}", structName));
 
+                // documentation
+                Paragraph parTable = null;
+                if (_wordDoc != null)
+                {
+                    Paragraph p2 = _wordDoc.Paragraphs.Add();
+                    p2.Range.Font.Name = "Arial";
+                    p2.Range.Font.Size = 10F;
+                    p2.Range.Text = structName;
+                    p2.Range.InsertParagraphAfter();
+
+                    parTable = _wordDoc.Paragraphs.Add();
+                    _wordCurrentTable = _wordDoc.Tables.Add(parTable.Range, 1, 3);
+
+                    _wordCurrentTable.Range.Font.Name = "Arial";
+                    _wordCurrentTable.Range.Font.Size = 8F;
+                    _wordCurrentTable.Range.Font.Bold = 0;
+
+                    _wordCurrentTable.Columns[1].Width = 100;
+                    _wordCurrentTable.Columns[2].Width = 100;
+                    _wordCurrentTable.Columns[3].Width = 40;
+
+                    _wordCurrentTable.Borders.OutsideLineStyle = WdLineStyle.wdLineStyleSingle;
+                    _wordCurrentTable.Borders.InsideLineStyle = WdLineStyle.wdLineStyleSingle;
+                }
+
                 // count the number of optional fields
                 int numOptionalFields=0;
+                int numFields=0;
                 foreach (XmlNode ownedAttributeNode in xmiNode.ChildNodes)
                 {
                     if (ownedAttributeNode.Name == "ownedAttribute")
@@ -1565,7 +1649,7 @@ namespace XMItoNodeset
                         {
                             if (umlType.Value == String.Format("{0}:Property", _umlNSPräfix))
                             {
-                                // add component node
+                                numFields++;
                                 foreach (XmlNode lowerValueNode in ownedAttributeNode.ChildNodes)
                                 {
                                     if (lowerValueNode.Name == "lowerValue")
@@ -1594,115 +1678,180 @@ namespace XMItoNodeset
                 }
 
                 int curOptionalField = -1;
-                foreach (XmlNode ownedAttributeNode in xmiNode.ChildNodes)
+                for (int i = 0; i < numFields; i++)
                 {
-                    if (ownedAttributeNode.Name == "ownedAttribute")
+                    foreach (XmlNode ownedAttributeNode in xmiNode.ChildNodes)
                     {
-                        XmlAttribute umlType = ownedAttributeNode.Attributes[String.Format("{0}:type", _xmiNSPräfix)];
-                        string lowerValue = "1";
-
-                        if (umlType != null)
+                        if (ownedAttributeNode.Name == "ownedAttribute")
                         {
-                            if (umlType.Value == String.Format("{0}:Property", _umlNSPräfix))
+                            // respect field positions
+                            XmlNode attrNode = getXmiAttributeEA(ownedAttributeNode.Attributes[String.Format("{0}:id", _xmiNSPräfix)].Value);
+                            int correctPos = -1;
+                            if (attrNode != null)
                             {
-                                // add component node
-                                foreach (XmlNode lowerValueNode in ownedAttributeNode.ChildNodes)
+                                foreach (XmlNode containmentNode in attrNode.ChildNodes)
                                 {
-                                    if (lowerValueNode.Name == "lowerValue")
+                                    if (containmentNode.Name == "containment")
                                     {
-                                        lowerValue = lowerValueNode.Attributes["value"].Value;
-                                        if (lowerValueNode.Attributes["value"].Value == "0")
-                                        { 
-                                            curOptionalField++;
-                                        }
-                                        break;
-                                    }
-                                }
-                                foreach (XmlNode typeNode in ownedAttributeNode.ChildNodes)
-                                {
-                                    if (typeNode.Name == "type")
-                                    {
-                                        XmlAttribute xmiIdref = typeNode.Attributes[String.Format("{0}:idref", _xmiNSPräfix)];
-                                        if (xmiIdref != null)
+                                        XmlAttribute posAttr = containmentNode.Attributes["position"];
+                                        if (posAttr != null)
                                         {
-                                            XmlNode xmiStructure = getXmiStructure(xmiIdref.Value);
-                                            XmlNode xmiEnumeration = getXmiEnumeration(xmiIdref.Value);
-                                            XmlNode xmiVariable = getXmiStubEA(xmiIdref.Value);
-
-                                            if ((xmiStructure == null) && (xmiVariable != null))
-                                            { 
-                                                XmlAttribute useAttribute = xmiVariable.Attributes["useStructure"];
-                                                if (useAttribute != null)
-                                                {
-                                                    xmiStructure = getXmiStructure(useAttribute.Value);
-                                                }
-                                            }
-
-                                            if ((xmiEnumeration == null) && (xmiVariable != null))
-                                            { 
-                                                XmlAttribute useAttribute = xmiVariable.Attributes["useEnumeration"];
-                                                if (useAttribute != null)
-                                                {
-                                                    xmiEnumeration = getXmiEnumeration(useAttribute.Value);
-                                                }
-                                            }
-
-                                            string dataTypeNodeId = "?#?";
-                                            string dataTypeBinary = "opc:?#?";
-                                            string dataTypeXml = "xs:?#?";
-
-                                            if (xmiStructure != null)
+                                            if (Int32.Parse(posAttr.Value) == i)
                                             {
-                                                dataTypeNodeId = getNodeId(String.Format("ns=1;s={0}", xmiStructure.Attributes[String.Format("{0}:id", _xmiNSPräfix)].Value));
-                                                dataTypeBinary = String.Format("tns:{0}", xmiStructure.Attributes["name"].Value);
-                                                dataTypeXml = String.Format("tns:{0}", xmiStructure.Attributes["name"].Value);
+                                                correctPos = 1;
                                             }
-                                            else if (xmiEnumeration != null)
+                                            else
                                             {
-                                                dataTypeNodeId = getNodeId(String.Format("ns=1;s={0}", xmiEnumeration.Attributes[String.Format("{0}:id", _xmiNSPräfix)].Value));
-                                                dataTypeBinary = String.Format("tns:{0}", xmiEnumeration.Attributes["name"].Value);
-                                                dataTypeXml = String.Format("tns:{0}", xmiEnumeration.Attributes["name"].Value);
-                                            }
-                                            else if (xmiVariable != null)
-                                            {
-                                                dataTypeNodeId = xmiVariable.Attributes["name"].Value;
-                                                XmlAttribute isDTAttribute = xmiVariable.Attributes["isDatatype"];
-                                                if (isDTAttribute != null)
-                                                {
-                                                    dataTypeNodeId = isDTAttribute.Value;
-                                                    dataTypeBinary = getBinaryDatatypeName(dataTypeNodeId);
-                                                    dataTypeXml = getXmlDatatypeName(dataTypeNodeId);
-                                                }
-                                            }
-
-                                            // nodeset
-                                            XmlNode nodesetFieldNode = addXmlElementAndTwoAttributes(_nodesetDoc, nodesetDefinitionNode, "Field", "Name", ownedAttributeNode.Attributes["name"].Value , "DataType", dataTypeNodeId);
-                                            if (lowerValue == "0")
-                                            {
-                                                addXmlAttribute(_nodesetDoc, nodesetFieldNode, "IsOptional", "true");
-                                            }
-                                            
-                                            // binary types
-                                            XmlNode binaryFieldNode = addQualifiedXmlElementAndTwoAttributes(_binaryTypesDoc, binaryStructTypeNode, "opc", "http://opcfoundation.org/BinarySchema/", "Field", "Name", ownedAttributeNode.Attributes["name"].Value, "TypeName", dataTypeBinary);
-                                            if (lowerValue == "0")
-                                            {
-                                                addXmlAttribute(_binaryTypesDoc, binaryFieldNode, "SwitchField", String.Format("Bit{0}", curOptionalField));
-                                                addXmlAttribute(_binaryTypesDoc, binaryFieldNode, "SwitchValue", "1");
-                                            }
-
-                                            // XML types
-                                            XmlNode xmlFieldNode = addQualifiedXmlElementAndTwoAttributes(_xmlTypesDoc, xmlStructTypeSqNode, "xs", "http://www.w3.org/2001/XMLSchema", "element", "name", ownedAttributeNode.Attributes["name"].Value, "TypeName", dataTypeXml);
-                                            if (lowerValue == "0")
-                                            {
-                                                addXmlAttribute(_xmlTypesDoc, xmlFieldNode, "minOccurs", "0");
-                                                addXmlAttribute(_xmlTypesDoc, xmlFieldNode, "nillable", "true");
+                                                correctPos = 0;
                                             }
                                         }
                                     }
                                 }
                             }
+                            if (correctPos == -1)
+                            {
+                                i = numFields;
+                            }
+                            else if (correctPos == 0)
+                            {
+                                continue;
+                            }
+
+                            XmlAttribute umlType = ownedAttributeNode.Attributes[String.Format("{0}:type", _xmiNSPräfix)];
+                            string lowerValue = "1";
+
+                            if (umlType != null)
+                            {
+                                if (umlType.Value == String.Format("{0}:Property", _umlNSPräfix))
+                                {
+                                    // add component node
+                                    foreach (XmlNode lowerValueNode in ownedAttributeNode.ChildNodes)
+                                    {
+                                        if (lowerValueNode.Name == "lowerValue")
+                                        {
+                                            lowerValue = lowerValueNode.Attributes["value"].Value;
+                                            if (lowerValueNode.Attributes["value"].Value == "0")
+                                            { 
+                                                curOptionalField++;
+                                            }
+                                            break;
+                                        }
+                                    }
+                                    foreach (XmlNode typeNode in ownedAttributeNode.ChildNodes)
+                                    {
+                                        if (typeNode.Name == "type")
+                                        {
+                                            XmlAttribute xmiIdref = typeNode.Attributes[String.Format("{0}:idref", _xmiNSPräfix)];
+                                            if (xmiIdref != null)
+                                            {
+                                                XmlNode xmiStructure = getXmiStructure(xmiIdref.Value);
+                                                XmlNode xmiEnumeration = getXmiEnumeration(xmiIdref.Value);
+                                                XmlNode xmiVariable = getXmiStubEA(xmiIdref.Value);
+
+                                                if ((xmiStructure == null) && (xmiVariable != null))
+                                                { 
+                                                    XmlAttribute useAttribute = xmiVariable.Attributes["useStructure"];
+                                                    if (useAttribute != null)
+                                                    {
+                                                        xmiStructure = getXmiStructure(useAttribute.Value);
+                                                    }
+                                                }
+
+                                                if ((xmiEnumeration == null) && (xmiVariable != null))
+                                                { 
+                                                    XmlAttribute useAttribute = xmiVariable.Attributes["useEnumeration"];
+                                                    if (useAttribute != null)
+                                                    {
+                                                        xmiEnumeration = getXmiEnumeration(useAttribute.Value);
+                                                    }
+                                                }
+
+                                                string dataTypeNodeId = "?#?";
+                                                string dataTypeBinary = "opc:?#?";
+                                                string dataTypeXml = "xs:?#?";
+
+                                                if (xmiStructure != null)
+                                                {
+                                                    dataTypeNodeId = getNodeId(String.Format("ns=1;s={0}", xmiStructure.Attributes[String.Format("{0}:id", _xmiNSPräfix)].Value));
+                                                    dataTypeBinary = String.Format("tns:{0}", xmiStructure.Attributes["name"].Value);
+                                                    dataTypeXml = String.Format("tns:{0}", xmiStructure.Attributes["name"].Value);
+                                                }
+                                                else if (xmiEnumeration != null)
+                                                {
+                                                    dataTypeNodeId = getNodeId(String.Format("ns=1;s={0}", xmiEnumeration.Attributes[String.Format("{0}:id", _xmiNSPräfix)].Value));
+                                                    dataTypeBinary = String.Format("tns:{0}", xmiEnumeration.Attributes["name"].Value);
+                                                    dataTypeXml = String.Format("tns:{0}", xmiEnumeration.Attributes["name"].Value);
+                                                }
+                                                else if (xmiVariable != null)
+                                                {
+                                                    dataTypeNodeId = xmiVariable.Attributes["name"].Value;
+                                                    XmlAttribute isDTAttribute = xmiVariable.Attributes["isDatatype"];
+                                                    if (isDTAttribute != null)
+                                                    {
+                                                        dataTypeNodeId = isDTAttribute.Value;
+                                                        dataTypeBinary = getBinaryDatatypeName(dataTypeNodeId);
+                                                        dataTypeXml = getXmlDatatypeName(dataTypeNodeId);
+                                                    }
+                                                }
+
+                                                // nodeset
+                                                XmlNode nodesetFieldNode = addXmlElementAndTwoAttributes(_nodesetDoc, nodesetDefinitionNode, "Field", "Name", ownedAttributeNode.Attributes["name"].Value , "DataType", dataTypeNodeId);
+                                                if (lowerValue == "0")
+                                                {
+                                                    addXmlAttribute(_nodesetDoc, nodesetFieldNode, "IsOptional", "true");
+                                                }
+                                            
+                                                // binary types
+                                                XmlNode binaryFieldNode = addQualifiedXmlElementAndTwoAttributes(_binaryTypesDoc, binaryStructTypeNode, "opc", "http://opcfoundation.org/BinarySchema/", "Field", "Name", ownedAttributeNode.Attributes["name"].Value, "TypeName", dataTypeBinary);
+                                                if (lowerValue == "0")
+                                                {
+                                                    addXmlAttribute(_binaryTypesDoc, binaryFieldNode, "SwitchField", String.Format("Bit{0}", curOptionalField));
+                                                    addXmlAttribute(_binaryTypesDoc, binaryFieldNode, "SwitchValue", "1");
+                                                }
+
+                                                // XML types
+                                                XmlNode xmlFieldNode = addQualifiedXmlElementAndTwoAttributes(_xmlTypesDoc, xmlStructTypeSqNode, "xs", "http://www.w3.org/2001/XMLSchema", "element", "name", ownedAttributeNode.Attributes["name"].Value, "TypeName", dataTypeXml);
+                                                if (lowerValue == "0")
+                                                {
+                                                    addXmlAttribute(_xmlTypesDoc, xmlFieldNode, "minOccurs", "0");
+                                                    addXmlAttribute(_xmlTypesDoc, xmlFieldNode, "nillable", "true");
+                                                }
+
+                                                // documentation
+                                                if (_wordCurrentTable != null)
+                                                {
+                                                    Row row = _wordCurrentTable.Rows.Add();
+                                                    row.Cells[1].Range.Text = ownedAttributeNode.Attributes["name"].Value;
+                                                    row.Cells[2].Range.Text = dataTypeBinary.Substring(4);
+                                                    if (lowerValue == "0")
+                                                    {
+                                                        row.Cells[3].Range.Text = "O";
+                                                    }
+                                                    else
+                                                    {
+                                                        row.Cells[3].Range.Text = "M";
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                            if (correctPos == 1)
+                            {
+                                break;
+                            }
                         }
                     }
+                }
+
+                if (_wordCurrentTable != null)
+                { 
+                    _wordCurrentTable.Rows[1].Range.Font.Bold = 1;
+                    _wordCurrentTable.Cell(1,1).Range.Text = "Element name";
+                    _wordCurrentTable.Cell(1,2).Range.Text = "DataType";
+                    _wordCurrentTable.Cell(1,3).Range.Text = "M/O";
+                    _wordCurrentTable = null;
                 }
             }
         }
